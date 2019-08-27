@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
@@ -31,18 +33,24 @@ public class Borrower {
     private LocalDate accountCreationDate;
 
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(
             name = "personId",
             foreignKey = @ForeignKey(name = "fk_borrower_person")
     )
     private Person person;
 
-    @OneToMany (
+    @OneToMany(
             targetEntity = Borrowing.class,
             mappedBy = "borrower"
     )
     private List<Borrowing> borrowings;
+
+    @PrePersist
+    protected void onCreate() {
+//        id = person.getId();
+        accountCreationDate = LocalDate.now();
+    }
 
     @Override
     public boolean equals(Object o) {

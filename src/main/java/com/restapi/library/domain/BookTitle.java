@@ -45,8 +45,8 @@ public class BookTitle {
 
     @OneToMany(
             targetEntity = Book.class,
-            mappedBy = "bookTitle",
-            cascade = CascadeType.ALL
+            mappedBy = "bookTitle"//,
+            //cascade = CascadeType.ALL
     )
     private List<Book> books;
 
