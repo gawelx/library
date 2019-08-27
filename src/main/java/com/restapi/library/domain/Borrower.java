@@ -51,13 +51,13 @@ public class Borrower {
         Borrower borrower = (Borrower) o;
         return Objects.equals(id, borrower.id) &&
                 Objects.equals(accountCreationDate, borrower.accountCreationDate) &&
-                person.equals(borrower.person) &&
-                Objects.equals(borrowings, borrower.borrowings);
+                person.equals(borrower.person);// &&
+//                Objects.equals(borrowings, borrower.borrowings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountCreationDate, person, borrowings);
+        return Objects.hash(id, accountCreationDate, person);//, borrowings);
     }
 
 }

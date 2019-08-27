@@ -52,13 +52,13 @@ public class Book {
         Book book = (Book) o;
         return Objects.equals(id, book.id) &&
                 status == book.status &&
-                bookTitle.equals(book.bookTitle) &&
-                Objects.equals(borrowings, book.borrowings);
+                bookTitle.equals(book.bookTitle);// &&
+//                Objects.equals(borrowings, book.borrowings);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, bookTitle, borrowings);
+        return Objects.hash(id, status, bookTitle);//, borrowings);
     }
 
 }

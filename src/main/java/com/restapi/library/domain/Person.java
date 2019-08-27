@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -43,7 +44,8 @@ public class Person {
     @OneToMany(
             targetEntity = BookTitle.class,
             mappedBy = "author",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
     )
     private List<BookTitle> bookTitles;
 
@@ -54,14 +56,14 @@ public class Person {
         Person person = (Person) o;
         return Objects.equals(id, person.id) &&
                 firstName.equals(person.firstName) &&
-                lastName.equals(person.lastName) &&
-                Objects.equals(borrower, person.borrower) &&
-                Objects.equals(bookTitles, person.bookTitles);
+                lastName.equals(person.lastName);// &&
+//                Objects.equals(borrower, person.borrower) &&
+//                Objects.equals(bookTitles, person.bookTitles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, borrower, bookTitles);
+        return Objects.hash(id, firstName, lastName);//, borrower, bookTitles);
     }
 
 }

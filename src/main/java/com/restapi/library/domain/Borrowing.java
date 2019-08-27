@@ -63,16 +63,16 @@ public class Borrowing {
         Borrowing borrowing = (Borrowing) o;
         return Objects.equals(id, borrowing.id) &&
                 borrowingDate.equals(borrowing.borrowingDate) &&
-                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
-                Objects.equals(returnDate, borrowing.returnDate) &&
-                Objects.equals(penaltyFee, borrowing.penaltyFee) &&
+//                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
+//                Objects.equals(returnDate, borrowing.returnDate) &&
+//                Objects.equals(penaltyFee, borrowing.penaltyFee) &&
                 borrower.equals(borrowing.borrower) &&
                 book.equals(borrowing.book);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, borrowingDate, borrowingPeriod, returnDate, penaltyFee, borrower, book);
+        return Objects.hash(id, borrowingDate/*, borrowingPeriod, returnDate, penaltyFee*/, borrower, book);
     }
 
 }
