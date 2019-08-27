@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,4 +55,24 @@ public class Borrowing {
             foreignKey = @ForeignKey(name = "fk_borrowing_book")
     )
     private Book book;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Borrowing borrowing = (Borrowing) o;
+        return Objects.equals(id, borrowing.id) &&
+                borrowingDate.equals(borrowing.borrowingDate) &&
+                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
+                Objects.equals(returnDate, borrowing.returnDate) &&
+                Objects.equals(penaltyFee, borrowing.penaltyFee) &&
+                borrower.equals(borrowing.borrower) &&
+                book.equals(borrowing.book);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, borrowingDate, borrowingPeriod, returnDate, penaltyFee, borrower, book);
+    }
+
 }

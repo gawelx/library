@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -43,5 +44,21 @@ public class Book {
             mappedBy = "book"
     )
     private List<Borrowing> borrowings;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(id, book.id) &&
+                status == book.status &&
+                bookTitle.equals(book.bookTitle) &&
+                Objects.equals(borrowings, book.borrowings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, status, bookTitle, borrowings);
+    }
 
 }

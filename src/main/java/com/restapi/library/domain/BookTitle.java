@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,4 +49,22 @@ public class BookTitle {
             cascade = CascadeType.ALL
     )
     private List<Book> books;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookTitle bookTitle = (BookTitle) o;
+        return Objects.equals(id, bookTitle.id) &&
+                title.equals(bookTitle.title) &&
+                releaseYear.equals(bookTitle.releaseYear) &&
+                author.equals(bookTitle.author) &&
+                Objects.equals(books, bookTitle.books);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, releaseYear, author, books);
+    }
+
 }

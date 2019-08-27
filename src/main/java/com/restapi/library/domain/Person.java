@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,5 +46,22 @@ public class Person {
             cascade = CascadeType.ALL
     )
     private List<BookTitle> bookTitles;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(id, person.id) &&
+                firstName.equals(person.firstName) &&
+                lastName.equals(person.lastName) &&
+                Objects.equals(borrower, person.borrower) &&
+                Objects.equals(bookTitles, person.bookTitles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, borrower, bookTitles);
+    }
 
 }
