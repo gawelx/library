@@ -40,10 +40,8 @@ public class BorrowerRepositoryTestSuite {
 
         try {
             //When
-//            person = personRepository.save(person);
-            borrower = borrowerRepository.save(borrower);
+            borrowerRepository.save(borrower);
             int beforeDeletionSize = borrowerRepository.findAll().size();
-            borrowerRepository.delete(borrower);
             personRepository.delete(person);
             int afterDeletionSize = borrowerRepository.findAll().size();
 
@@ -51,7 +49,7 @@ public class BorrowerRepositoryTestSuite {
             assertEquals(1, beforeDeletionSize);
             assertEquals(0, afterDeletionSize);
         } finally {
-            borrowerRepository.delete(borrower);
+            //Cleanup
             personRepository.delete(person);
         }
     }

@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -28,7 +27,6 @@ public class Book {
     private Long id;
 
     @NotNull
-    @Column
     private BookStatus status;
 
     @NotNull
@@ -46,19 +44,18 @@ public class Book {
     private List<Borrowing> borrowings;
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, status, bookTitle);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
         return Objects.equals(id, book.id) &&
                 status == book.status &&
-                bookTitle.equals(book.bookTitle);// &&
-//                Objects.equals(borrowings, book.borrowings);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, status, bookTitle);//, borrowings);
+                bookTitle.equals(book.bookTitle);
     }
 
 }

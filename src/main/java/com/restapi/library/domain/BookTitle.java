@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -28,11 +27,9 @@ public class BookTitle {
     private Long id;
 
     @NotNull
-    @Column
     private String title;
 
     @NotNull
-    @Column(name = "releaseYear")
     private Integer releaseYear;
 
     @NotNull
@@ -45,10 +42,15 @@ public class BookTitle {
 
     @OneToMany(
             targetEntity = Book.class,
-            mappedBy = "bookTitle"//,
-            //cascade = CascadeType.ALL
+            mappedBy = "bookTitle",
+            cascade = CascadeType.ALL
     )
     private List<Book> books;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, releaseYear, author);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -58,13 +60,7 @@ public class BookTitle {
         return Objects.equals(id, bookTitle.id) &&
                 title.equals(bookTitle.title) &&
                 releaseYear.equals(bookTitle.releaseYear) &&
-                author.equals(bookTitle.author);// &&
-//                Objects.equals(books, bookTitle.books);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, releaseYear, author);//, books);
+                author.equals(bookTitle.author);
     }
 
 }

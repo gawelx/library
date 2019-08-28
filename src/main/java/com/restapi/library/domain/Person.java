@@ -5,13 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -29,26 +25,31 @@ public class Person {
     private Long id;
 
     @NotNull
-    @Column(name = "firstName")
     private String firstName;
 
     @NotNull
-    @Column(name = "lastName")
     private String lastName;
 
     @OneToOne(
             targetEntity = Borrower.class,
             mappedBy = "person",
-            cascade = CascadeType.REMOVE
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
     )
     private Borrower borrower;
 
     @OneToMany(
             targetEntity = BookTitle.class,
-            mappedBy = "author"//,
-//            cascade = CascadeType.REMOVE
+            mappedBy = "author",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
     )
     private List<BookTitle> bookTitles;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -57,14 +58,7 @@ public class Person {
         Person person = (Person) o;
         return Objects.equals(id, person.id) &&
                 firstName.equals(person.firstName) &&
-                lastName.equals(person.lastName);// &&
-//                Objects.equals(borrower, person.borrower) &&
-//                Objects.equals(bookTitles, person.bookTitles);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName);//, borrower, bookTitles);
+                lastName.equals(person.lastName);
     }
 
 }

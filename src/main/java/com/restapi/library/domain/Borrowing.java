@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -27,17 +26,13 @@ public class Borrowing {
     private Long id;
 
     @NotNull
-    @Column(name = "borrowingDate")
     private LocalDate borrowingDate;
 
     @NotNull
-    @Column(name = "borrowingPeriod")
     private Integer borrowingPeriod;
 
-    @Column(name = "returnDate")
     private LocalDate returnDate;
 
-    @Column(name = "penaltyFee")
     private BigDecimal penaltyFee;
 
     @NotNull
@@ -57,22 +52,19 @@ public class Borrowing {
     private Book book;
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, borrowingDate, borrower, book);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Borrowing borrowing = (Borrowing) o;
         return Objects.equals(id, borrowing.id) &&
                 borrowingDate.equals(borrowing.borrowingDate) &&
-//                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
-//                Objects.equals(returnDate, borrowing.returnDate) &&
-//                Objects.equals(penaltyFee, borrowing.penaltyFee) &&
                 borrower.equals(borrowing.borrower) &&
                 book.equals(borrowing.book);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, borrowingDate/*, borrowingPeriod, returnDate, penaltyFee*/, borrower, book);
     }
 
 }
