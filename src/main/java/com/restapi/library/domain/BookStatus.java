@@ -1,4 +1,4 @@
-package com.restapi.library;
+package com.restapi.library.domain;
 
 public enum BookStatus {
     AVAILABLE("available"),

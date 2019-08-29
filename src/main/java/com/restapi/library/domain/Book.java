@@ -1,6 +1,5 @@
 package com.restapi.library.domain;
 
-import com.restapi.library.BookStatus;
 import com.restapi.library.dto.BookDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
