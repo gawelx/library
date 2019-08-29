@@ -1,6 +1,7 @@
 package com.restapi.library.domain;
 
 import com.restapi.library.BookStatus;
+import com.restapi.library.dto.BookDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,15 @@ public class Book {
             mappedBy = "book"
     )
     private List<Borrowing> borrowings;
+
+    public Book(final BookDto bookDto, final BookTitle bookTitle, List<Borrowing> borrowings) {
+        this(
+                bookDto.getId(),
+                BookStatus.valueOf(bookDto.getStatus()),
+                bookTitle,
+                borrowings
+        );
+    }
 
     @Override
     public int hashCode() {

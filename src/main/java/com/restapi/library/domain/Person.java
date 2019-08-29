@@ -1,5 +1,6 @@
 package com.restapi.library.domain;
 
+import com.restapi.library.dto.PersonDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,16 @@ public class Person {
             orphanRemoval = true
     )
     private List<BookTitle> bookTitles;
+
+    public Person(final PersonDto personDto, final Borrower borrower, final List<BookTitle> bookTitles) {
+        this(
+                personDto.getId(),
+                personDto.getFirstName(),
+                personDto.getLastName(),
+                borrower,
+                bookTitles
+        );
+    }
 
     @Override
     public int hashCode() {

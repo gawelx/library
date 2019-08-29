@@ -1,5 +1,6 @@
 package com.restapi.library.domain;
 
+import com.restapi.library.dto.BorrowerDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class Borrower {
     @Id
     private Long id;
 
-    private LocalDateTime accountCreationDate;
+    private LocalDateTime accountCreationDateTime;
 
     @NotNull
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -44,14 +45,23 @@ public class Borrower {
     )
     private List<Borrowing> borrowings;
 
+    public Borrower(final BorrowerDto borrowerDto, final Person person, final List<Borrowing> borrowings) {
+        this(
+                borrowerDto.getId(),
+                borrowerDto.getAccountCreationDateTime(),
+                person,
+                borrowings
+        );
+    }
+
     @PrePersist
     protected void onCreate() {
-        accountCreationDate = LocalDateTime.now();
+        accountCreationDateTime = LocalDateTime.now();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountCreationDate, person);
+        return Objects.hash(accountCreationDateTime, person);
     }
 
     @Override
@@ -59,7 +69,7 @@ public class Borrower {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Borrower borrower = (Borrower) o;
-        return Objects.equals(accountCreationDate, borrower.accountCreationDate) &&
+        return Objects.equals(accountCreationDateTime, borrower.accountCreationDateTime) &&
                 person.equals(borrower.person);
     }
 

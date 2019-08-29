@@ -1,5 +1,6 @@
 package com.restapi.library.domain;
 
+import com.restapi.library.dto.BorrowingDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,18 @@ public class Borrowing {
             foreignKey = @ForeignKey(name = "fk_borrowing_book")
     )
     private Book book;
+
+    public Borrowing(final BorrowingDto borrowingDto, final Borrower borrower, final Book book) {
+        this(
+                borrowingDto.getId(),
+                borrowingDto.getBorrowingDate(),
+                borrowingDto.getBorrowingPeriod(),
+                borrowingDto.getReturnDate(),
+                borrowingDto.getPenaltyFee(),
+                borrower,
+                book
+        );
+    }
 
     @Override
     public int hashCode() {

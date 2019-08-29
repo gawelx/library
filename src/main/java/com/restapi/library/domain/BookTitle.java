@@ -1,5 +1,6 @@
 package com.restapi.library.domain;
 
+import com.restapi.library.dto.BookTitleDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity(name = "BookTitle")
+@Entity
 public class BookTitle {
 
     @Id
@@ -46,6 +47,16 @@ public class BookTitle {
             cascade = CascadeType.ALL
     )
     private List<Book> books;
+
+    public BookTitle(final BookTitleDto bookTitleDto, final Person author, final List<Book> books) {
+        this(
+                bookTitleDto.getId(),
+                bookTitleDto.getTitle(),
+                bookTitleDto.getReleaseYear(),
+                author,
+                books
+        );
+    }
 
     @Override
     public int hashCode() {
