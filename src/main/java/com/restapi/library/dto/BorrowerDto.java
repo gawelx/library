@@ -14,13 +14,11 @@ public class BorrowerDto {
 
     private Long id;
     private LocalDateTime accountCreationDateTime;
-    private PersonDto personDto;
 
     public BorrowerDto(final Borrower borrower) {
         this(
                 borrower.getId(),
-                borrower.getAccountCreationDateTime(),
-                new PersonDto(borrower.getPerson())
+                borrower.getAccountCreationDateTime()
         );
     }
 

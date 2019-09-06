@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -17,9 +16,8 @@ public class BorrowingDto {
     private LocalDate borrowingDate;
     private Integer borrowingPeriod;
     private LocalDate returnDate;
-    private BigDecimal penaltyFee;
-    private BorrowerDto borrowerDto;
-    private BookDto bookDto;
+    private Long borrowerId;
+    private Long bookId;
 
     public BorrowingDto(final Borrowing borrowing) {
         this(
@@ -27,9 +25,8 @@ public class BorrowingDto {
                 borrowing.getBorrowingDate(),
                 borrowing.getBorrowingPeriod(),
                 borrowing.getReturnDate(),
-                borrowing.getPenaltyFee(),
-                new BorrowerDto(borrowing.getBorrower()),
-                new BookDto(borrowing.getBook())
+                borrowing.getBorrower().getId(),
+                borrowing.getBook().getId()
         );
     }
 

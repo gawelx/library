@@ -5,17 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,37 +31,46 @@ public class BookTitle {
     @NotNull
     private String title;
 
-    @NotNull
-    private Integer releaseYear;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(
-            name = "authorId",
-            foreignKey = @ForeignKey(name = "fk_bookTitle_person")
+    @ManyToMany
+    @JoinTable(
+            name = "bookTitle_author",
+            joinColumns = @JoinColumn(
+                    name = "bookTitleId",
+                    foreignKey = @ForeignKey(name = "fk_bta_bookTitle")
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "authorId",
+                    foreignKey = @ForeignKey(name = "fk_bta_author")
+            )
     )
-    private Person author;
+    private Set<Person> authors;
 
     @OneToMany(
             targetEntity = Book.class,
-            mappedBy = "bookTitle",
-            cascade = CascadeType.ALL
+            mappedBy = "bookTitle"
     )
     private List<Book> books;
 
-    public BookTitle(final BookTitleDto bookTitleDto, final Person author, final List<Book> books) {
+    public BookTitle(final BookTitleDto bookTitleDto, final Set<Person> authors, final List<Book> books) {
         this(
                 bookTitleDto.getId(),
                 bookTitleDto.getTitle(),
-                bookTitleDto.getReleaseYear(),
-                author,
+                authors,
                 books
         );
     }
 
+    public void clearId() {
+        id = null;
+    }
+
+    public void addAuthor(Person author) {
+        authors.add(author);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, releaseYear, author);
+        return Objects.hash(id, title, authors);
     }
 
     @Override
@@ -70,8 +80,7 @@ public class BookTitle {
         BookTitle bookTitle = (BookTitle) o;
         return Objects.equals(id, bookTitle.id) &&
                 title.equals(bookTitle.title) &&
-                releaseYear.equals(bookTitle.releaseYear) &&
-                author.equals(bookTitle.author);
+                authors.equals(bookTitle.authors);
     }
 
 }

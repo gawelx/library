@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.restapi.library.domain.PersonStatus.ACTIVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -26,6 +27,7 @@ public class PersonRepositoryTestSuite {
         //Given
         Person person = new Person(
                 null,
+                ACTIVE,
                 "John",
                 "Smith",
                 null,
@@ -47,6 +49,7 @@ public class PersonRepositoryTestSuite {
         //Given
         Person person = new Person(
                 null,
+                ACTIVE,
                 "John",
                 "Smith",
                 null,
@@ -54,28 +57,31 @@ public class PersonRepositoryTestSuite {
 
         //When
         person = personRepository.save(person);
-        List<Person> retrievedPersons = personRepository.findAll();
+        List<Person> retrievedPersons = personRepository.findAllByStatus(ACTIVE);
 
         //Then
         try {
             assertEquals(1, retrievedPersons.size());
             assertTrue(retrievedPersons.contains(person));
         } finally {
+            //Cleanup
             personRepository.delete(person);
         }
     }
 
     @Test
-    public void testFindAll() {
+    public void testFindAllByStatus() {
         //Given
         Person person1 = new Person(
                 null,
+                ACTIVE,
                 "John",
                 "Smith",
                 null,
                 Collections.emptyList());
         Person person2 = new Person(
                 null,
+                ACTIVE,
                 "Jane",
                 "Doe",
                 null,
@@ -84,7 +90,7 @@ public class PersonRepositoryTestSuite {
         //When
         person1 = personRepository.save(person1);
         person2 = personRepository.save(person2);
-        List<Person> retrievedPersons = personRepository.findAll();
+        List<Person> retrievedPersons = personRepository.findAllByStatus(ACTIVE);
 
         //Then
         try {
@@ -93,7 +99,8 @@ public class PersonRepositoryTestSuite {
             assertTrue(retrievedPersons.contains(person2));
         } finally {
             //CleanUp
-            personRepository.deleteAll();
+            personRepository.delete(person1);
+            personRepository.delete(person2);
         }
     }
 
@@ -102,6 +109,7 @@ public class PersonRepositoryTestSuite {
         //Given
         Person person = new Person(
                 null,
+                ACTIVE,
                 "John",
                 "Smith",
                 null,
@@ -109,7 +117,7 @@ public class PersonRepositoryTestSuite {
 
         //When
         person = personRepository.save(person);
-        Optional<Person> retrievedPerson = personRepository.findById(person.getId());
+        Optional<Person> retrievedPerson = personRepository.findByIdAndStatus(person.getId(), ACTIVE);
 
         //Then
         try {
@@ -118,37 +126,6 @@ public class PersonRepositoryTestSuite {
         } finally {
             //CleanUp
             personRepository.delete(person);
-        }
-    }
-
-    @Test
-    public void testFindByFirstNameAndLastName() {
-        //Given
-        Person person1 = new Person(
-                null,
-                "John",
-                "Smith",
-                null,
-                Collections.emptyList());
-        Person person2 = new Person(
-                null,
-                "Jane",
-                "Doe",
-                null,
-                Collections.emptyList());
-
-        //When
-        personRepository.save(person1);
-        person2 = personRepository.save(person2);
-        Optional<Person> retrievedPerson = personRepository.findByFirstNameAndLastName(person2.getFirstName(),
-                person2.getLastName());
-        //Then
-        try {
-            assertTrue(retrievedPerson.isPresent());
-            assertEquals(person2, retrievedPerson.get());
-        } finally {
-            //CleanUp
-            personRepository.deleteAll();
         }
     }
 

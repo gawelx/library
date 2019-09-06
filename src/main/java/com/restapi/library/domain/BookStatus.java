@@ -1,23 +1,24 @@
 package com.restapi.library.domain;
 
+import com.restapi.library.exception.BadRequestException;
+
 public enum BookStatus {
     AVAILABLE("available"),
     BORROWED("borrowed"),
     DAMAGED("damaged"),
-    LOST("lost");
+    LOST("lost"),
+    CANCELED("canceled");
 
     private String status;
 
-    private BookStatus(String status) {
+    BookStatus(String status) {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return status;
-    }
-
-    static BookStatus getInstance(String status) {
+    public static BookStatus of(String status) {
+        if (status == null) {
+            throw new BadRequestException("Book status can't be null.");
+        }
         switch (status) {
             case "available":
                 return AVAILABLE;
@@ -27,7 +28,15 @@ public enum BookStatus {
                 return DAMAGED;
             case "lost":
                 return LOST;
+            case "canceled":
+                return CANCELED;
         }
-        throw new IllegalStateException("Unknown book status.");
+        throw new BadRequestException("'" + status + "' is not valid book status.");
     }
+
+    @Override
+    public String toString() {
+        return status;
+    }
+
 }

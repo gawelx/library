@@ -16,18 +16,13 @@ import java.util.Map;
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({
-            PersonNotFoundException.class,
-            BorrowerNotFoundException.class,
-            BookTitleNotFoundException.class,
-            BookNotFoundException.class,
-            BorrowingNotFoundException.class
-    })
-    protected ResponseEntity<Object> handleEntityNotFoundException(RuntimeException exception, WebRequest request) {
-        return buildResponseEntity(exception, request, HttpStatus.NOT_FOUND);
+    @ExceptionHandler(RestException.class)
+    protected ResponseEntity<Object> handleRestException(RestException exception, WebRequest request) {
+        return buildResponseEntity(exception, request, exception.getHttpStatus());
     }
 
-    private ResponseEntity<Object> buildResponseEntity(RuntimeException exception, WebRequest request, HttpStatus status) {
+    private ResponseEntity<Object> buildResponseEntity(RuntimeException exception, WebRequest request,
+                                                       HttpStatus status) {
         Map<String, Object> bodyOfResponse = new LinkedHashMap<>();
         bodyOfResponse.put("timestamp", LocalDateTime.now());
         bodyOfResponse.put("status", status.value());
@@ -37,11 +32,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return handleExceptionInternal(exception, bodyOfResponse, new HttpHeaders(), status, request);
     }
 
-    @ExceptionHandler({
-            UnknownBookStatusException.class,
-            UnknownPersonStatusException.class
-    })
-    protected ResponseEntity<Object> handleUnknownBookStatus(RuntimeException exception, WebRequest request) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> handleIllegalArgumentException(RuntimeException exception, WebRequest request) {
         return buildResponseEntity(exception, request, HttpStatus.BAD_REQUEST);
     }
 

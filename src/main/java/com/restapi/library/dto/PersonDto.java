@@ -15,7 +15,11 @@ public class PersonDto {
     private String lastName;
 
     public PersonDto(final Person person) {
-        this(person.getId(), person.getFirstName(), person.getLastName());
+        this(
+                person.getId(),
+                person.getFirstName(),
+                person.getLastName()
+        );
     }
 
 }

@@ -5,14 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -34,8 +35,6 @@ public class Borrowing {
 
     private LocalDate returnDate;
 
-    private BigDecimal penaltyFee;
-
     @NotNull
     @ManyToOne
     @JoinColumn(
@@ -45,7 +44,10 @@ public class Borrowing {
     private Borrower borrower;
 
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinColumn(
             name = "bookId",
             foreignKey = @ForeignKey(name = "fk_borrowing_book")
@@ -58,10 +60,31 @@ public class Borrowing {
                 borrowingDto.getBorrowingDate(),
                 borrowingDto.getBorrowingPeriod(),
                 borrowingDto.getReturnDate(),
-                borrowingDto.getPenaltyFee(),
                 borrower,
                 book
         );
+    }
+
+    @PrePersist
+    public void onCreate() {
+        borrowingDate = LocalDate.now();
+        returnDate = null;
+    }
+
+    public void clearId() {
+        id = null;
+    }
+
+    public void setBorrowingPeriod(Integer borrowingPeriod) {
+        this.borrowingPeriod = borrowingPeriod;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+
+    public boolean isBookReturned() {
+        return returnDate != null;
     }
 
     @Override
