@@ -7,27 +7,26 @@ public enum BorrowingAction {
     BORROWING_PERIOD_UPDATE("periodUpdate"),
     BOOK_RETURN("bookReturn");
 
-    private String action;
+    private String restParamValue;
 
-    BorrowingAction(String action) {
-        this.action = action;
+    BorrowingAction(String restParamValue) {
+        this.restParamValue = restParamValue;
     }
 
-    public static BorrowingAction of(String action) {
-        if (action == null) {
+    public static BorrowingAction of(String value) {
+        if (value == null) {
             throw new BadRequestException("Action property can't be null.");
         }
-        switch (action) {
-            case "periodUpdate":
-                return BORROWING_PERIOD_UPDATE;
-            case "bookReturn":
-                return BOOK_RETURN;
+        for (BorrowingAction borrowingAction : values()) {
+            if (borrowingAction.restParamValue.equals(value)) {
+                return borrowingAction;
+            }
         }
-        throw new BadRequestException("'" + action + "' is not valid borrowing action.");
+        throw new BadRequestException("'" + value + "' is not valid borrowing action.");
     }
 
     @Override
     public String toString() {
-        return action;
+        return restParamValue;
     }
 }

@@ -6,28 +6,27 @@ public enum PersonStatus {
     ACTIVE("active"),
     DELETED("deleted");
 
-    private String status;
+    private String restParamValue;
 
-    PersonStatus(String status) {
-        this.status = status;
+    PersonStatus(String restParamValue) {
+        this.restParamValue = restParamValue;
     }
 
-    public static PersonStatus of(String status) {
-        if (status == null) {
+    public static PersonStatus of(String value) {
+        if (value == null) {
             throw new BadRequestException("Person/borrower status can't be null.");
         }
-        switch (status) {
-            case "active":
-                return ACTIVE;
-            case "deleted":
-                return DELETED;
+        for (PersonStatus personStatus : values()) {
+            if (personStatus.restParamValue.equals(value)) {
+                return personStatus;
+            }
         }
-        throw new BadRequestException("'" + status + "' is not valid person/borrower status.");
+        throw new BadRequestException("'" + value + "' is not valid person/borrower status.");
     }
 
     @Override
     public String toString() {
-        return status;
+        return restParamValue;
     }
 
 }

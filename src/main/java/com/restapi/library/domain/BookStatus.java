@@ -9,34 +9,27 @@ public enum BookStatus {
     LOST("lost"),
     CANCELED("canceled");
 
-    private String status;
+    private String restParamValue;
 
-    BookStatus(String status) {
-        this.status = status;
+    BookStatus(String restParamValue) {
+        this.restParamValue = restParamValue;
     }
 
-    public static BookStatus of(String status) {
-        if (status == null) {
+    public static BookStatus of(String value) {
+        if (value == null) {
             throw new BadRequestException("Book status can't be null.");
         }
-        switch (status) {
-            case "available":
-                return AVAILABLE;
-            case "borrowed":
-                return BORROWED;
-            case "damaged":
-                return DAMAGED;
-            case "lost":
-                return LOST;
-            case "canceled":
-                return CANCELED;
+        for (BookStatus bookStatus : values()) {
+            if (bookStatus.restParamValue.equals(value)) {
+                return bookStatus;
+            }
         }
-        throw new BadRequestException("'" + status + "' is not valid book status.");
+        throw new BadRequestException("'" + value + "' is not valid book status.");
     }
 
     @Override
     public String toString() {
-        return status;
+        return restParamValue;
     }
 
 }
