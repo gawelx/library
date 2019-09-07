@@ -3,6 +3,7 @@ package com.restapi.library.service;
 import com.restapi.library.controller.BorrowingAction;
 import com.restapi.library.controller.ProblemType;
 import com.restapi.library.domain.Borrowing;
+import com.restapi.library.domain.PenaltiesFactory;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookRepository;
@@ -23,13 +24,15 @@ public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final BorrowerRepository borrowerRepository;
     private final BookRepository bookRepository;
+    private final PenaltiesFactory penaltiesFactory;
 
     @Autowired
-    public BorrowingService(final BorrowingRepository borrowingRepository,
-                            final BorrowerRepository borrowerRepository, final BookRepository bookRepository) {
+    public BorrowingService(final BorrowingRepository borrowingRepository, final BorrowerRepository borrowerRepository,
+                            final BookRepository bookRepository, final PenaltiesFactory penaltiesFactory) {
         this.borrowingRepository = borrowingRepository;
         this.borrowerRepository = borrowerRepository;
         this.bookRepository = bookRepository;
+        this.penaltiesFactory = penaltiesFactory;
     }
 
     public List<Borrowing> getAllBorrowings() {
@@ -69,7 +72,7 @@ public class BorrowingService {
                 .orElseThrow(() -> new NotFoundException("The borrowing with the id=" + borrowing.getId() +
                         " doesn't exist."));
         if (persistedBorrowing.isBookReturned()) {
-            throw new ConflictException("The book has been already returned.");
+            throw new ConflictException("The book has been already returned. Update is impossible.");
         }
         Borrowing updatedBorrowing = null;
         switch (action) {
@@ -94,6 +97,7 @@ public class BorrowingService {
     private Borrowing returnBook(final Borrowing borrowing, final ProblemType problemType) {
         borrowing.setReturnDate(LocalDate.now());
         borrowing.getBook().setStatus(problemType.getBookStatus());
+        borrowing.setPenalties(penaltiesFactory.createPenalties(borrowing));
         return borrowingRepository.save(borrowing);
     }
 

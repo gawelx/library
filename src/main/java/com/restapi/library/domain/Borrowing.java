@@ -12,9 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -54,14 +56,23 @@ public class Borrowing {
     )
     private Book book;
 
-    public Borrowing(final BorrowingDto borrowingDto, final Borrower borrower, final Book book) {
+    @OneToMany(
+            cascade = CascadeType.MERGE,
+            targetEntity = Penalty.class,
+            mappedBy = "borrowing"
+    )
+    private List<Penalty> penalties;
+
+    public Borrowing(final BorrowingDto borrowingDto, final Borrower borrower, final Book book,
+                     final List<Penalty> penalties) {
         this(
                 borrowingDto.getId(),
                 borrowingDto.getBorrowingDate(),
                 borrowingDto.getBorrowingPeriod(),
                 borrowingDto.getReturnDate(),
                 borrower,
-                book
+                book,
+                penalties
         );
     }
 
@@ -81,6 +92,10 @@ public class Borrowing {
 
     public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public void setPenalties(List<Penalty> penalties) {
+        this.penalties = penalties;
     }
 
     public boolean isBookReturned() {
