@@ -1,7 +1,6 @@
 package com.restapi.library.service;
 
 import com.restapi.library.domain.Borrower;
-import com.restapi.library.domain.Person;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BorrowerRepository;
@@ -35,13 +34,10 @@ public class BorrowerService {
 
     public Borrower createBorrower(final Borrower borrower) {
         if (borrowerRepository.existsByIdAndStatus(borrower.getId(), ACTIVE)) {
-            throw new ConflictException("The borrower with the id=" + borrower.getId() + " already exists." +
-                    ".");
+            throw new ConflictException("The borrower with the id=" + borrower.getId() + " already exists.");
         }
         borrower.setStatus(ACTIVE);
         borrower.setAccountCreationDateTime(LocalDateTime.now());
-        Person person = borrower.getPerson();
-        person.setBorrower(borrower);
         return borrowerRepository.save(borrower);
     }
 
