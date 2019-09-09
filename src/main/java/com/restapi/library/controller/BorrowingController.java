@@ -57,8 +57,8 @@ public class BorrowingController {
     }
 
     @GetMapping
-    public List<BorrowingDto> getAllBorrowings() {
-        return borrowingService.getAllBorrowings().stream()
+    public List<BorrowingDto> getAllBorrowings(@RequestParam(defaultValue = "all") String category) {
+        return borrowingService.getAllBorrowings(category).stream()
                 .map(BorrowingDto::new)
                 .collect(Collectors.toList());
     }

@@ -4,6 +4,7 @@ import com.restapi.library.controller.BorrowingAction;
 import com.restapi.library.controller.ProblemType;
 import com.restapi.library.domain.Borrowing;
 import com.restapi.library.domain.PenaltiesFactory;
+import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookRepository;
@@ -35,8 +36,16 @@ public class BorrowingService {
         this.penaltiesFactory = penaltiesFactory;
     }
 
-    public List<Borrowing> getAllBorrowings() {
-        return borrowingRepository.findAll();
+    public List<Borrowing> getAllBorrowings(final String category) {
+        switch (category) {
+            case "all":
+                return borrowingRepository.findAll();
+            case "pending":
+                return borrowingRepository.findAllByReturnDateIsNull();
+            case "closed":
+                return borrowingRepository.findAllByReturnDateIsNotNull();
+        }
+        throw new BadRequestException("'" + category + "' is not valid borrowing category.");
     }
 
     public Borrowing getBorrowing(final Long id) {
@@ -44,11 +53,19 @@ public class BorrowingService {
                 .orElseThrow(() -> new NotFoundException("The borrowing with the id=" + id + " doesn't exist."));
     }
 
-    public List<Borrowing> getBorrowingsOfBorrower(final Long borrowerId) {
+    public List<Borrowing> getBorrowingsOfBorrower(final Long borrowerId, final String category) {
         if (!borrowerRepository.existsByIdAndStatus(borrowerId, ACTIVE)) {
             throw new NotFoundException("The borrower with the id=" + borrowerId + " doesn't exist.");
         }
-        return borrowingRepository.findAllByBorrowerId(borrowerId);
+        switch (category) {
+            case "all":
+                return borrowingRepository.findAllByBorrowerId(borrowerId);
+            case "pending":
+                return borrowingRepository.findAllByBorrowerIdAndReturnDateIsNull(borrowerId);
+            case "closed":
+                return borrowingRepository.findAllByBorrowerIdAndReturnDateIsNotNull(borrowerId);
+        }
+        throw new BadRequestException("'" + category + "' is not valid borrowing category.");
     }
 
     public List<Borrowing> getBorrowingsOfBook(final Long bookId) {

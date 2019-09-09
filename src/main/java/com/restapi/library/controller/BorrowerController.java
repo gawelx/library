@@ -60,8 +60,9 @@ public class BorrowerController {
     }
 
     @GetMapping("/{id}/borrowings")
-    public List<BorrowingDto> getBorrowersBorrowings(@PathVariable Long id) {
-        return borrowingService.getBorrowingsOfBorrower(id).stream()
+    public List<BorrowingDto> getBorrowersBorrowings(@PathVariable Long id,
+                                                     @RequestParam(defaultValue = "all") String category) {
+        return borrowingService.getBorrowingsOfBorrower(id, category).stream()
                 .map(BorrowingDto::new)
                 .collect(Collectors.toList());
     }
