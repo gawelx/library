@@ -16,10 +16,12 @@ import static com.restapi.library.domain.PersonStatus.DELETED;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final BorrowerService borrowerService;
 
     @Autowired
-    public PersonService(final PersonRepository personRepository) {
+    public PersonService(final PersonRepository personRepository, final BorrowerService borrowerService) {
         this.personRepository = personRepository;
+        this.borrowerService = borrowerService;
     }
 
     public List<Person> getAllPersons() {
@@ -45,10 +47,10 @@ public class PersonService {
 
     public void deletePerson(final Long id) {
         personRepository.findById(id).ifPresent(person -> {
-            person.setStatus(DELETED);
             if (person.isBorrower()) {
-                person.getBorrower().setStatus(DELETED);
+                borrowerService.deleteBorrower(id);
             }
+            person.setStatus(DELETED);
             personRepository.save(person);
         });
     }

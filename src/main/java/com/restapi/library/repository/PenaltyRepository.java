@@ -17,4 +17,6 @@ public interface PenaltyRepository extends JpaRepository<Penalty, Long> {
 
     List<Penalty> findAllByBorrowingBorrowerIdAndPaid(Long borrowerId, Boolean paid);
 
+    boolean existsByBorrowingBorrowerIdAndPaid(Long borrowerId, Boolean paid);
+
 }

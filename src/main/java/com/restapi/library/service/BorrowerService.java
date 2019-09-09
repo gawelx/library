@@ -4,6 +4,8 @@ import com.restapi.library.domain.Borrower;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BorrowerRepository;
+import com.restapi.library.repository.BorrowingRepository;
+import com.restapi.library.repository.PenaltyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,15 @@ import static com.restapi.library.domain.PersonStatus.DELETED;
 public class BorrowerService {
 
     private final BorrowerRepository borrowerRepository;
+    private final PenaltyRepository penaltyRepository;
+    private final BorrowingRepository borrowingRepository;
 
     @Autowired
-    public BorrowerService(final BorrowerRepository borrowerRepository) {
+    public BorrowerService(final BorrowerRepository borrowerRepository, final PenaltyRepository penaltyRepository,
+                           final BorrowingRepository borrowingRepository) {
         this.borrowerRepository = borrowerRepository;
+        this.penaltyRepository = penaltyRepository;
+        this.borrowingRepository = borrowingRepository;
     }
 
     public List<Borrower> getAllBorrowers() {
@@ -43,6 +50,14 @@ public class BorrowerService {
 
     public void deleteBorrower(final Long id) {
         borrowerRepository.findByIdAndStatus(id, ACTIVE).ifPresent(borrower -> {
+            if (penaltyRepository.existsByBorrowingBorrowerIdAndPaid(id, false)) {
+                throw new ConflictException("Can't delete the borrower with the id='" + id + "' due to unpaid " +
+                        "penalties.");
+            }
+            if (borrowingRepository.existsByBorrowerIdAndReturnDateIsNull(id)) {
+                throw new ConflictException("Can't delete the borrower with the id='" + id + "' due to pending " +
+                        "borrowings.");
+            }
             borrower.setStatus(DELETED);
             borrower.getPerson().removeBorrower();
             borrowerRepository.save(borrower);
