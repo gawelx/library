@@ -1,6 +1,5 @@
 package com.restapi.library.repository;
 
-import com.restapi.library.domain.BookTitle;
 import com.restapi.library.domain.Person;
 import com.restapi.library.domain.PersonStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +19,8 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Optional<Person> findByIdAndStatus(Long id, PersonStatus status);
 
-    Set<Person> findAllByBookTitlesContains(BookTitle bookTitle);
+    @Query
+    Set<Person> findAllByBookTitlesContains(Long bookTitleId);
 
     @Query
     List<Person> findAllByBookTitlesNotEmpty();

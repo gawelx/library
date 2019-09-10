@@ -59,7 +59,6 @@ public class BorrowerService {
                         "borrowings.");
             }
             borrower.setStatus(DELETED);
-            borrower.getPerson().removeBorrower();
             borrowerRepository.save(borrower);
         });
     }

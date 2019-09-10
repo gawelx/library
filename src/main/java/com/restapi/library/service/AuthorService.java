@@ -36,7 +36,7 @@ public class AuthorService {
         BookTitle bookTitle = bookTitleRepository.findById(bookTitleId)
                 .orElseThrow(() -> new NotFoundException("The book title with the id=" + bookTitleId +
                         " doesn't exist."));
-        return personRepository.findAllByBookTitlesContains(bookTitle);
+        return personRepository.findAllByBookTitlesContains(bookTitle.getId());
     }
 
 }

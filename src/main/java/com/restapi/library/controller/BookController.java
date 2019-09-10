@@ -3,7 +3,6 @@ package com.restapi.library.controller;
 import com.restapi.library.domain.Book;
 import com.restapi.library.domain.BookStatus;
 import com.restapi.library.domain.BookTitle;
-import com.restapi.library.domain.Borrowing;
 import com.restapi.library.dto.BookDto;
 import com.restapi.library.dto.BookTitleDto;
 import com.restapi.library.dto.BorrowingDto;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,13 +79,12 @@ public class BookController {
     @PostMapping
     public BookDto createBook(@RequestBody BookDto bookDto) {
         BookTitle bookTitle = bookTitleService.getBookTitle(bookDto.getBookTitleId());
-        return new BookDto(bookService.createBook(new Book(bookDto, bookTitle, Collections.emptyList())));
+        return new BookDto(bookService.createBook(new Book(bookDto, bookTitle)));
     }
 
     @PutMapping
     public BookDto updateBook(@RequestBody BookDto bookDto) {
-        List<Borrowing> borrowings = borrowingService.getBorrowingsOfBook(bookDto.getId());
-        return new BookDto(bookService.updateBook(new Book(bookDto, null, borrowings)));
+        return new BookDto(bookService.updateBook(new Book(bookDto, null)));
     }
 
 }

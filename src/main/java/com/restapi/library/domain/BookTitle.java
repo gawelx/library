@@ -12,9 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,18 +43,11 @@ public class BookTitle {
     )
     private Set<Person> authors;
 
-    @OneToMany(
-            targetEntity = Book.class,
-            mappedBy = "bookTitle"
-    )
-    private List<Book> books;
-
-    public BookTitle(final BookTitleDto bookTitleDto, final Set<Person> authors, final List<Book> books) {
+    public BookTitle(final BookTitleDto bookTitleDto, final Set<Person> authors) {
         this(
                 bookTitleDto.getId(),
                 bookTitleDto.getTitle(),
-                authors,
-                books
+                authors
         );
     }
 
@@ -70,7 +61,7 @@ public class BookTitle {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, authors, books);
+        return Objects.hash(id, title, authors);
     }
 
     @Override
@@ -80,8 +71,7 @@ public class BookTitle {
         BookTitle bookTitle = (BookTitle) o;
         return id.equals(bookTitle.id) &&
                 title.equals(bookTitle.title) &&
-                authors.equals(bookTitle.authors) &&
-                books.equals(bookTitle.books);
+                authors.equals(bookTitle.authors);
     }
 
 }

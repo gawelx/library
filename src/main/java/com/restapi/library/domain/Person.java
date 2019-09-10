@@ -8,22 +8,23 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
 
 import static com.restapi.library.domain.PersonStatus.ACTIVE;
 
 @NamedQuery(
-        name = "Person.FindAllByBookTitlesNotEmpty",
-        query = "select distinct p from BookTitle bt left join Person p"
+        name = "Person.findAllByBookTitlesContains",
+        query = "select distinct p from BookTitle bt inner join bt.authors p where bt.id = :bookTitleId"
 )
 @NamedQuery(
-        name = "Person.FindByIdAndBookTitlesNotEmpty",
-        query = "select distinct p from BookTitle bt left join Person p where p.id = :id"
+        name = "Person.findAllByBookTitlesNotEmpty",
+        query = "select distinct p from BookTitle bt inner join bt.authors p"
+)
+@NamedQuery(
+        name = "Person.findByIdAndBookTitlesNotEmpty",
+        query = "select distinct p from BookTitle bt inner join bt.authors p where p.id = :id"
 )
 
 @NoArgsConstructor
@@ -44,26 +45,12 @@ public class Person {
     @NotNull
     private String lastName;
 
-    @OneToOne(
-            targetEntity = Borrower.class,
-            mappedBy = "person"
-    )
-    private Borrower borrower;
-
-    @ManyToMany(
-            targetEntity = BookTitle.class,
-            mappedBy = "authors"
-    )
-    private List<BookTitle> bookTitles;
-
-    public Person(final PersonDto personDto, final Borrower borrower, final List<BookTitle> bookTitles) {
+    public Person(final PersonDto personDto) {
         this(
                 personDto.getId(),
                 ACTIVE,
                 personDto.getFirstName(),
-                personDto.getLastName(),
-                borrower,
-                bookTitles
+                personDto.getLastName()
         );
     }
 
@@ -75,21 +62,9 @@ public class Person {
         id = null;
     }
 
-    public boolean isBorrower() {
-        return borrower != null;
-    }
-
-    public void setBorrower(Borrower borrower) {
-        this.borrower = borrower;
-    }
-
-    public void removeBorrower() {
-        borrower = null;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, firstName, lastName, borrower, bookTitles);
+        return Objects.hash(id, status, firstName, lastName);
     }
 
     @Override
@@ -100,21 +75,7 @@ public class Person {
         return id.equals(person.id) &&
                 status == person.status &&
                 firstName.equals(person.firstName) &&
-                lastName.equals(person.lastName) &&
-                Objects.equals(borrower, person.borrower) &&
-                bookTitles.equals(person.bookTitles);
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", status=" + status +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", borrower=" + borrower.getId() +
-                ", bookTitles=" + bookTitles +
-                '}';
+                lastName.equals(person.lastName);
     }
 
 }

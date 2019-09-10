@@ -1,6 +1,5 @@
 package com.restapi.library.repository;
 
-import com.restapi.library.domain.BookTitle;
 import com.restapi.library.domain.Person;
 import org.hibernate.Hibernate;
 import org.junit.Test;
@@ -35,9 +34,6 @@ public class PersonRepositoryTestSuite {
 
     @Autowired
     private PersonRepository personRepository;
-
-    @Autowired
-    private BookTitleRepository bookTitleRepository;
 
     @Test
     public void testFindAllByStatus() {
@@ -81,10 +77,9 @@ public class PersonRepositoryTestSuite {
         //Given
         Person person1 = personRepository.getOne(1L);
         Person person2 = personRepository.getOne(4L);
-        BookTitle bookTitle = bookTitleRepository.getOne(12L);
 
         //When
-        Set<Person> retrievedPersons = personRepository.findAllByBookTitlesContains(bookTitle);
+        Set<Person> retrievedPersons = personRepository.findAllByBookTitlesContains(12L);
 
         //Then
         assertThat(retrievedPersons, containsInAnyOrder(

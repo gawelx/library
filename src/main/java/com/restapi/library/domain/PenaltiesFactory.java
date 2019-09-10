@@ -64,10 +64,6 @@ public class PenaltiesFactory {
         LocalDate returnDate = borrowing.getBorrowingDate().plusDays(borrowing.getBorrowingPeriod());
         Period period = returnDate.until(borrowing.getReturnDate());
         int days = (int) DAYS.between(returnDate, borrowing.getReturnDate());
-//        int days = borrowing.getBorrowingDate()
-//                .plusDays(borrowing.getBorrowingPeriod())
-//                .until(borrowing.getReturnDate())
-//                .getDays();
         return Math.max(days, 0);
     }
 

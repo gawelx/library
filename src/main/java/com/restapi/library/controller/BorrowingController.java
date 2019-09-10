@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -112,14 +111,14 @@ public class BorrowingController {
         Borrower borrower = borrowerService.getBorrower(borrowingDto.getBorrowerId());
         Book book = bookService.getAvailableBook(borrowingDto.getBookId());
         return new BorrowingDto(borrowingService.createBorrowing(
-                new Borrowing(borrowingDto, borrower, book, Collections.emptyList())
+                new Borrowing(borrowingDto, borrower, book)
         ));
     }
 
     @PutMapping
     public BorrowingDto updateBorrowing(@RequestBody BorrowingDto borrowingDto, @RequestParam String action,
                                         @RequestParam(defaultValue = "none") String problemType) {
-        Borrowing borrowing = new Borrowing(borrowingDto, null, null, null);
+        Borrowing borrowing = new Borrowing(borrowingDto, null, null);
         return new BorrowingDto(
                 borrowingService.updateBorrowing(borrowing, BorrowingAction.of(action), problemType)
         );

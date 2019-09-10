@@ -10,6 +10,7 @@ import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookRepository;
 import com.restapi.library.repository.BorrowerRepository;
 import com.restapi.library.repository.BorrowingRepository;
+import com.restapi.library.repository.PenaltyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +26,17 @@ public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final BorrowerRepository borrowerRepository;
     private final BookRepository bookRepository;
+    private final PenaltyRepository penaltyRepository;
     private final PenaltiesFactory penaltiesFactory;
 
     @Autowired
     public BorrowingService(final BorrowingRepository borrowingRepository, final BorrowerRepository borrowerRepository,
-                            final BookRepository bookRepository, final PenaltiesFactory penaltiesFactory) {
+                            final BookRepository bookRepository, final PenaltyRepository penaltyRepository,
+                            final PenaltiesFactory penaltiesFactory) {
         this.borrowingRepository = borrowingRepository;
         this.borrowerRepository = borrowerRepository;
         this.bookRepository = bookRepository;
+        this.penaltyRepository = penaltyRepository;
         this.penaltiesFactory = penaltiesFactory;
     }
 
@@ -77,8 +81,6 @@ public class BorrowingService {
 
     public Borrowing createBorrowing(final Borrowing borrowing) {
         borrowing.clearId();
-        borrowing.getBorrower().addBorrowing(borrowing);
-        borrowing.getBook().addBorrowing(borrowing);
         borrowing.getBook().setStatus(BORROWED);
         return borrowingRepository.save(borrowing);
     }
@@ -114,7 +116,7 @@ public class BorrowingService {
     private Borrowing returnBook(final Borrowing borrowing, final ProblemType problemType) {
         borrowing.setReturnDate(LocalDate.now());
         borrowing.getBook().setStatus(problemType.getBookStatus());
-        borrowing.setPenalties(penaltiesFactory.createPenalties(borrowing));
+        penaltyRepository.saveAll(penaltiesFactory.createPenalties(borrowing));
         return borrowingRepository.save(borrowing);
     }
 

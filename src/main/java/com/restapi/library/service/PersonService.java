@@ -47,9 +47,7 @@ public class PersonService {
 
     public void deletePerson(final Long id) {
         personRepository.findById(id).ifPresent(person -> {
-            if (person.isBorrower()) {
-                borrowerService.deleteBorrower(id);
-            }
+            borrowerService.deleteBorrower(id);
             person.setStatus(DELETED);
             personRepository.save(person);
         });

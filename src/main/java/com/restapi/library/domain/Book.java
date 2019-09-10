@@ -11,10 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -43,20 +41,13 @@ public class Book {
     )
     private BookTitle bookTitle;
 
-    @OneToMany(
-            targetEntity = Borrowing.class,
-            mappedBy = "book"
-    )
-    private List<Borrowing> borrowings;
-
-    public Book(final BookDto bookDto, final BookTitle bookTitle, List<Borrowing> borrowings) {
+    public Book(final BookDto bookDto, final BookTitle bookTitle) {
         this(
                 bookDto.getId(),
                 bookDto.getReleaseYear(),
                 bookDto.getPrice(),
                 bookDto.getStatus() == null ? null : BookStatus.of(bookDto.getStatus()),
-                bookTitle,
-                borrowings
+                bookTitle
         );
     }
 
@@ -76,13 +67,9 @@ public class Book {
         this.id = null;
     }
 
-    public void addBorrowing(Borrowing borrowing) {
-        borrowings.add(borrowing);
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, releaseYear, price, status, bookTitle, borrowings);
+        return Objects.hash(id, releaseYear, price, status, bookTitle);
     }
 
     @Override
@@ -94,8 +81,7 @@ public class Book {
                 releaseYear.equals(book.releaseYear) &&
                 price.equals(book.price) &&
                 status == book.status &&
-                bookTitle.equals(book.bookTitle) &&
-                borrowings.equals(book.borrowings);
+                bookTitle.equals(book.bookTitle);
     }
 
 }
