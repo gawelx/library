@@ -75,7 +75,7 @@ public class Borrower {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, accountCreationDateTime, person);
+        return Objects.hash(id, status, accountCreationDateTime, person, borrowings);
     }
 
     @Override
@@ -84,9 +84,21 @@ public class Borrower {
         if (o == null || getClass() != o.getClass()) return false;
         Borrower borrower = (Borrower) o;
         return id.equals(borrower.id) &&
-                Objects.equals(status, borrower.status) &&
-                Objects.equals(accountCreationDateTime, borrower.accountCreationDateTime) &&
-                person.equals(borrower.person);
+                status == borrower.status &&
+                accountCreationDateTime.equals(borrower.accountCreationDateTime) &&
+                person.equals(borrower.person) &&
+                borrowings.equals(borrower.borrowings);
+    }
+
+    @Override
+    public String toString() {
+        return "Borrower{" +
+                "id=" + id +
+                ", status=" + status +
+                ", accountCreationDateTime=" + accountCreationDateTime +
+                ", person=" + person +
+                ", borrowings=" + borrowings +
+                '}';
     }
 
 }

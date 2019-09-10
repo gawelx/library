@@ -89,7 +89,7 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, firstName, lastName);
+        return Objects.hash(id, status, firstName, lastName, borrower, bookTitles);
     }
 
     @Override
@@ -97,10 +97,24 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(id, person.id) &&
-                Objects.equals(status, person.status) &&
+        return id.equals(person.id) &&
+                status == person.status &&
                 firstName.equals(person.firstName) &&
-                lastName.equals(person.lastName);
+                lastName.equals(person.lastName) &&
+                Objects.equals(borrower, person.borrower) &&
+                bookTitles.equals(person.bookTitles);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", status=" + status +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", borrower=" + borrower.getId() +
+                ", bookTitles=" + bookTitles +
+                '}';
     }
 
 }

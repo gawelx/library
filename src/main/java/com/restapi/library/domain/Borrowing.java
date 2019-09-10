@@ -104,7 +104,7 @@ public class Borrowing {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, borrowingDate, borrower, book);
+        return Objects.hash(id, borrowingDate, borrowingPeriod, returnDate, borrower, book, penalties);
     }
 
     @Override
@@ -112,10 +112,13 @@ public class Borrowing {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Borrowing borrowing = (Borrowing) o;
-        return Objects.equals(id, borrowing.id) &&
+        return id.equals(borrowing.id) &&
                 borrowingDate.equals(borrowing.borrowingDate) &&
+                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
+                Objects.equals(returnDate, borrowing.returnDate) &&
                 borrower.equals(borrowing.borrower) &&
-                book.equals(borrowing.book);
+                book.equals(borrowing.book) &&
+                penalties.equals(borrowing.penalties);
     }
 
 }

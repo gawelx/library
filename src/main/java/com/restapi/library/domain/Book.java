@@ -82,7 +82,7 @@ public class Book {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, releaseYear, status, bookTitle);
+        return Objects.hash(id, releaseYear, price, status, bookTitle, borrowings);
     }
 
     @Override
@@ -90,10 +90,12 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(id, book.id) &&
+        return id.equals(book.id) &&
                 releaseYear.equals(book.releaseYear) &&
+                price.equals(book.price) &&
                 status == book.status &&
-                bookTitle.equals(book.bookTitle);
+                bookTitle.equals(book.bookTitle) &&
+                borrowings.equals(book.borrowings);
     }
 
 }

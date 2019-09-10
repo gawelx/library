@@ -1,6 +1,5 @@
 package com.restapi.library.domain;
 
-import com.restapi.library.dto.PenaltyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,24 +46,13 @@ public class Penalty {
     )
     private Borrowing borrowing;
 
-    public Penalty(PenaltyDto penaltyDto, Borrowing borrowing) {
-        this(
-                penaltyDto.getId(),
-                penaltyDto.getCreationTime(),
-                PenaltyCause.of(penaltyDto.getPenaltyCause()),
-                penaltyDto.getPenaltyFee(),
-                penaltyDto.getPaid(),
-                borrowing
-        );
-    }
-
     public void setPaid(Boolean paid) {
         this.paid = paid;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creationTime, penaltyCause, penaltyFee, borrowing);
+        return Objects.hash(id, creationTime, penaltyCause, penaltyFee, paid, borrowing);
     }
 
     @Override
@@ -76,6 +64,7 @@ public class Penalty {
                 creationTime.equals(penalty.creationTime) &&
                 penaltyCause == penalty.penaltyCause &&
                 penaltyFee.equals(penalty.penaltyFee) &&
+                paid.equals(penalty.paid) &&
                 borrowing.equals(penalty.borrowing);
     }
 
