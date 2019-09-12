@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,8 +59,9 @@ public class BorrowerController {
     }
 
     @GetMapping("/{id}/borrowings")
-    public List<BorrowingDto> getBorrowersBorrowings(@PathVariable Long id) {
-        return borrowingService.getBorrowingsOfBorrower(id).stream()
+    public List<BorrowingDto> getBorrowersBorrowings(@PathVariable Long id,
+                                                     @RequestParam(defaultValue = "all") String category) {
+        return borrowingService.getBorrowingsOfBorrower(id, category).stream()
                 .map(BorrowingDto::new)
                 .collect(Collectors.toList());
     }
@@ -76,7 +76,7 @@ public class BorrowerController {
     @PostMapping
     public BorrowerDto createBorrower(@RequestBody BorrowerDto borrowerDto) {
         Person person = personService.getPerson(borrowerDto.getId());
-        return new BorrowerDto(borrowerService.createBorrower(new Borrower(borrowerDto, person, Collections.emptyList())));
+        return new BorrowerDto(borrowerService.createBorrower(new Borrower(borrowerDto, person)));
     }
 
     @DeleteMapping("/{id}")

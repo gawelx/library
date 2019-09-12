@@ -1,5 +1,8 @@
-package com.restapi.library.domain;
+package com.restapi.library.service;
 
+import com.restapi.library.domain.Borrowing;
+import com.restapi.library.domain.Penalty;
+import com.restapi.library.domain.PenaltyCause;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -7,7 +10,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +64,7 @@ public class PenaltiesFactory {
 
     private int countDelayDays(final Borrowing borrowing) {
         LocalDate returnDate = borrowing.getBorrowingDate().plusDays(borrowing.getBorrowingPeriod());
-        Period period = returnDate.until(borrowing.getReturnDate());
         int days = (int) DAYS.between(returnDate, borrowing.getReturnDate());
-//        int days = borrowing.getBorrowingDate()
-//                .plusDays(borrowing.getBorrowingPeriod())
-//                .until(borrowing.getReturnDate())
-//                .getDays();
         return Math.max(days, 0);
     }
 

@@ -1,9 +1,9 @@
 package com.restapi.library.domain;
 
-import com.restapi.library.dto.PenaltyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -19,10 +19,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Penalty {
 
-    public static final BigDecimal PENALTY_DAILY_RATE = BigDecimal.valueOf(1.0);
+    public static final BigDecimal PENALTY_DAILY_RATE = BigDecimal.valueOf(1);
 
     @Id
     @GeneratedValue
@@ -47,24 +48,13 @@ public class Penalty {
     )
     private Borrowing borrowing;
 
-    public Penalty(PenaltyDto penaltyDto, Borrowing borrowing) {
-        this(
-                penaltyDto.getId(),
-                penaltyDto.getCreationTime(),
-                PenaltyCause.of(penaltyDto.getPenaltyCause()),
-                penaltyDto.getPenaltyFee(),
-                penaltyDto.getPaid(),
-                borrowing
-        );
-    }
-
     public void setPaid(Boolean paid) {
         this.paid = paid;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creationTime, penaltyCause, penaltyFee, borrowing);
+        return Objects.hash(id, creationTime, penaltyCause, penaltyFee, paid, borrowing);
     }
 
     @Override
@@ -72,10 +62,11 @@ public class Penalty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Penalty penalty = (Penalty) o;
-        return id.equals(penalty.id) &&
+        return Objects.equals(id, penalty.id) &&
                 creationTime.equals(penalty.creationTime) &&
                 penaltyCause == penalty.penaltyCause &&
-                penaltyFee.equals(penalty.penaltyFee) &&
+                penaltyFee.compareTo(penalty.penaltyFee) == 0 &&
+                paid.equals(penalty.paid) &&
                 borrowing.equals(penalty.borrowing);
     }
 

@@ -4,6 +4,7 @@ import com.restapi.library.dto.BorrowingDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,16 +13,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Borrowing {
 
@@ -56,23 +56,14 @@ public class Borrowing {
     )
     private Book book;
 
-    @OneToMany(
-            cascade = CascadeType.MERGE,
-            targetEntity = Penalty.class,
-            mappedBy = "borrowing"
-    )
-    private List<Penalty> penalties;
-
-    public Borrowing(final BorrowingDto borrowingDto, final Borrower borrower, final Book book,
-                     final List<Penalty> penalties) {
+    public Borrowing(final BorrowingDto borrowingDto, final Borrower borrower, final Book book) {
         this(
                 borrowingDto.getId(),
                 borrowingDto.getBorrowingDate(),
                 borrowingDto.getBorrowingPeriod(),
                 borrowingDto.getReturnDate(),
                 borrower,
-                book,
-                penalties
+                book
         );
     }
 
@@ -94,17 +85,13 @@ public class Borrowing {
         this.returnDate = returnDate;
     }
 
-    public void setPenalties(List<Penalty> penalties) {
-        this.penalties = penalties;
-    }
-
     public boolean isBookReturned() {
         return returnDate != null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, borrowingDate, borrower, book);
+        return Objects.hash(id, borrowingDate, borrowingPeriod, returnDate, borrower, book);
     }
 
     @Override
@@ -112,8 +99,10 @@ public class Borrowing {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Borrowing borrowing = (Borrowing) o;
-        return Objects.equals(id, borrowing.id) &&
+        return id.equals(borrowing.id) &&
                 borrowingDate.equals(borrowing.borrowingDate) &&
+                borrowingPeriod.equals(borrowing.borrowingPeriod) &&
+                Objects.equals(returnDate, borrowing.returnDate) &&
                 borrower.equals(borrowing.borrower) &&
                 book.equals(borrowing.book);
     }

@@ -1,6 +1,5 @@
 package com.restapi.library.controller;
 
-import com.restapi.library.domain.Book;
 import com.restapi.library.domain.BookTitle;
 import com.restapi.library.domain.Person;
 import com.restapi.library.dto.BookDto;
@@ -71,7 +70,7 @@ public class BookTitleController {
 
     @PostMapping
     public BookTitleDto createBookTitle(@RequestBody BookTitleDto bookTitleDto) {
-        BookTitle bookTitle = new BookTitle(bookTitleDto, Collections.emptySet(), Collections.emptyList());
+        BookTitle bookTitle = new BookTitle(bookTitleDto, Collections.emptySet());
         return new BookTitleDto(bookTitleService.createBookTitle(bookTitle));
     }
 
@@ -87,8 +86,7 @@ public class BookTitleController {
     @PutMapping
     public BookTitleDto updateBookTitle(@RequestBody BookTitleDto bookTitleDto) {
         Set<Person> authors = authorService.getAllAuthorsOfBookTitle(bookTitleDto.getId());
-        List<Book> books = bookService.getAllBooksOfBookTitle(bookTitleDto.getId());
-        BookTitle bookTitle = new BookTitle(bookTitleDto, authors, books);
+        BookTitle bookTitle = new BookTitle(bookTitleDto, authors);
         return new BookTitleDto(bookTitleService.updateBookTitle(bookTitle));
     }
 

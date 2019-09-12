@@ -4,6 +4,7 @@ import com.restapi.library.dto.BookDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,15 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Book {
 
@@ -43,20 +43,13 @@ public class Book {
     )
     private BookTitle bookTitle;
 
-    @OneToMany(
-            targetEntity = Borrowing.class,
-            mappedBy = "book"
-    )
-    private List<Borrowing> borrowings;
-
-    public Book(final BookDto bookDto, final BookTitle bookTitle, List<Borrowing> borrowings) {
+    public Book(final BookDto bookDto, final BookTitle bookTitle) {
         this(
                 bookDto.getId(),
                 bookDto.getReleaseYear(),
                 bookDto.getPrice(),
                 bookDto.getStatus() == null ? null : BookStatus.of(bookDto.getStatus()),
-                bookTitle,
-                borrowings
+                bookTitle
         );
     }
 
@@ -76,13 +69,9 @@ public class Book {
         this.id = null;
     }
 
-    public void addBorrowing(Borrowing borrowing) {
-        borrowings.add(borrowing);
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, releaseYear, status, bookTitle);
+        return Objects.hash(id, releaseYear, price, status, bookTitle);
     }
 
     @Override
@@ -90,8 +79,9 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(id, book.id) &&
+        return id.equals(book.id) &&
                 releaseYear.equals(book.releaseYear) &&
+                price.compareTo(book.price) == 0 &&
                 status == book.status &&
                 bookTitle.equals(book.bookTitle);
     }

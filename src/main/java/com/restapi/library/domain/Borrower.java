@@ -4,21 +4,21 @@ import com.restapi.library.dto.BorrowerDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.MapsId;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Borrower {
 
@@ -38,23 +38,13 @@ public class Borrower {
     @MapsId
     private Person person;
 
-    @OneToMany(
-            targetEntity = Borrowing.class,
-            mappedBy = "borrower"
-    )
-    private List<Borrowing> borrowings;
-
-    public Borrower(final BorrowerDto borrowerDto, final Person person, final List<Borrowing> borrowings) {
+    public Borrower(final BorrowerDto borrowerDto, final Person person) {
         this(
                 borrowerDto.getId(),
                 null,
                 borrowerDto.getAccountCreationDateTime(),
-                person,
-                borrowings
+                person
         );
-        if (person.getBorrower() == null) {
-            person.setBorrower(this);
-        }
     }
 
     public void setAccountCreationDateTime(LocalDateTime accountCreationDateTime) {
@@ -69,10 +59,6 @@ public class Borrower {
         this.person = person;
     }
 
-    public void addBorrowing(Borrowing borrowing) {
-        borrowings.add(borrowing);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(id, status, accountCreationDateTime, person);
@@ -84,8 +70,8 @@ public class Borrower {
         if (o == null || getClass() != o.getClass()) return false;
         Borrower borrower = (Borrower) o;
         return id.equals(borrower.id) &&
-                Objects.equals(status, borrower.status) &&
-                Objects.equals(accountCreationDateTime, borrower.accountCreationDateTime) &&
+                status == borrower.status &&
+                accountCreationDateTime.equals(borrower.accountCreationDateTime) &&
                 person.equals(borrower.person);
     }
 

@@ -2,7 +2,6 @@ package com.restapi.library.service;
 
 import com.restapi.library.domain.BookTitle;
 import com.restapi.library.domain.Person;
-import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookTitleRepository;
 import com.restapi.library.repository.PersonRepository;
@@ -34,7 +33,7 @@ public class BookTitleService {
 
     public List<BookTitle> getAllBookTitlesOfAuthor(final Long authorId) {
         Person author = personRepository.findByIdAndBookTitlesNotEmpty(authorId)
-                .orElseThrow(() -> new BadRequestException("The author with the id=" + authorId + " doesn't exist."));
+                .orElseThrow(() -> new NotFoundException("The author with the id=" + authorId + " doesn't exist."));
         return bookTitleRepository.findAllByAuthorsContains(author);
     }
 
@@ -49,6 +48,9 @@ public class BookTitleService {
     }
 
     public BookTitle updateBookTitle(final BookTitle bookTitle) {
+        if (!bookTitleRepository.existsById(bookTitle.getId())) {
+            throw new NotFoundException("The book title with the id=" + bookTitle.getId() + " doesn't exist.");
+        }
         return bookTitleRepository.save(bookTitle);
     }
 

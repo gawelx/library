@@ -4,6 +4,7 @@ import com.restapi.library.dto.BookTitleDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -12,15 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class BookTitle {
 
@@ -45,18 +45,11 @@ public class BookTitle {
     )
     private Set<Person> authors;
 
-    @OneToMany(
-            targetEntity = Book.class,
-            mappedBy = "bookTitle"
-    )
-    private List<Book> books;
-
-    public BookTitle(final BookTitleDto bookTitleDto, final Set<Person> authors, final List<Book> books) {
+    public BookTitle(final BookTitleDto bookTitleDto, final Set<Person> authors) {
         this(
                 bookTitleDto.getId(),
                 bookTitleDto.getTitle(),
-                authors,
-                books
+                authors
         );
     }
 
@@ -78,7 +71,7 @@ public class BookTitle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookTitle bookTitle = (BookTitle) o;
-        return Objects.equals(id, bookTitle.id) &&
+        return id.equals(bookTitle.id) &&
                 title.equals(bookTitle.title) &&
                 authors.equals(bookTitle.authors);
     }

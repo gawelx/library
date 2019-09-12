@@ -3,12 +3,13 @@ package com.restapi.library.service;
 import com.restapi.library.controller.BorrowingAction;
 import com.restapi.library.controller.ProblemType;
 import com.restapi.library.domain.Borrowing;
-import com.restapi.library.domain.PenaltiesFactory;
+import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookRepository;
 import com.restapi.library.repository.BorrowerRepository;
 import com.restapi.library.repository.BorrowingRepository;
+import com.restapi.library.repository.PenaltyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +25,30 @@ public class BorrowingService {
     private final BorrowingRepository borrowingRepository;
     private final BorrowerRepository borrowerRepository;
     private final BookRepository bookRepository;
+    private final PenaltyRepository penaltyRepository;
     private final PenaltiesFactory penaltiesFactory;
 
     @Autowired
     public BorrowingService(final BorrowingRepository borrowingRepository, final BorrowerRepository borrowerRepository,
-                            final BookRepository bookRepository, final PenaltiesFactory penaltiesFactory) {
+                            final BookRepository bookRepository, final PenaltyRepository penaltyRepository,
+                            final PenaltiesFactory penaltiesFactory) {
         this.borrowingRepository = borrowingRepository;
         this.borrowerRepository = borrowerRepository;
         this.bookRepository = bookRepository;
+        this.penaltyRepository = penaltyRepository;
         this.penaltiesFactory = penaltiesFactory;
     }
 
-    public List<Borrowing> getAllBorrowings() {
-        return borrowingRepository.findAll();
+    public List<Borrowing> getAllBorrowings(final String category) {
+        switch (category) {
+            case "all":
+                return borrowingRepository.findAll();
+            case "pending":
+                return borrowingRepository.findAllByReturnDateIsNull();
+            case "closed":
+                return borrowingRepository.findAllByReturnDateIsNotNull();
+        }
+        throw new BadRequestException("'" + category + "' is not valid borrowing category.");
     }
 
     public Borrowing getBorrowing(final Long id) {
@@ -44,11 +56,19 @@ public class BorrowingService {
                 .orElseThrow(() -> new NotFoundException("The borrowing with the id=" + id + " doesn't exist."));
     }
 
-    public List<Borrowing> getBorrowingsOfBorrower(final Long borrowerId) {
+    public List<Borrowing> getBorrowingsOfBorrower(final Long borrowerId, final String category) {
         if (!borrowerRepository.existsByIdAndStatus(borrowerId, ACTIVE)) {
             throw new NotFoundException("The borrower with the id=" + borrowerId + " doesn't exist.");
         }
-        return borrowingRepository.findAllByBorrowerId(borrowerId);
+        switch (category) {
+            case "all":
+                return borrowingRepository.findAllByBorrowerId(borrowerId);
+            case "pending":
+                return borrowingRepository.findAllByBorrowerIdAndReturnDateIsNull(borrowerId);
+            case "closed":
+                return borrowingRepository.findAllByBorrowerIdAndReturnDateIsNotNull(borrowerId);
+        }
+        throw new BadRequestException("'" + category + "' is not valid borrowing category.");
     }
 
     public List<Borrowing> getBorrowingsOfBook(final Long bookId) {
@@ -60,8 +80,6 @@ public class BorrowingService {
 
     public Borrowing createBorrowing(final Borrowing borrowing) {
         borrowing.clearId();
-        borrowing.getBorrower().addBorrowing(borrowing);
-        borrowing.getBook().addBorrowing(borrowing);
         borrowing.getBook().setStatus(BORROWED);
         return borrowingRepository.save(borrowing);
     }
@@ -97,7 +115,7 @@ public class BorrowingService {
     private Borrowing returnBook(final Borrowing borrowing, final ProblemType problemType) {
         borrowing.setReturnDate(LocalDate.now());
         borrowing.getBook().setStatus(problemType.getBookStatus());
-        borrowing.setPenalties(penaltiesFactory.createPenalties(borrowing));
+        penaltyRepository.saveAll(penaltiesFactory.createPenalties(borrowing));
         return borrowingRepository.save(borrowing);
     }
 

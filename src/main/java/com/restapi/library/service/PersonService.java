@@ -1,7 +1,6 @@
 package com.restapi.library.service;
 
 import com.restapi.library.domain.Person;
-import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,12 @@ import static com.restapi.library.domain.PersonStatus.DELETED;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final BorrowerService borrowerService;
 
     @Autowired
-    public PersonService(final PersonRepository personRepository) {
+    public PersonService(final PersonRepository personRepository, final BorrowerService borrowerService) {
         this.personRepository = personRepository;
+        this.borrowerService = borrowerService;
     }
 
     public List<Person> getAllPersons() {
@@ -38,17 +39,15 @@ public class PersonService {
 
     public Person updatePerson(final Person person) {
         if (person.getId() == null) {
-            throw new BadRequestException("The person id must be specified.");
+            throw new NotFoundException("The person with the id " + person.getId() + " doesn't exist.");
         }
         return personRepository.save(person);
     }
 
     public void deletePerson(final Long id) {
         personRepository.findById(id).ifPresent(person -> {
+            borrowerService.deleteBorrower(id);
             person.setStatus(DELETED);
-            if (person.isBorrower()) {
-                person.getBorrower().setStatus(DELETED);
-            }
             personRepository.save(person);
         });
     }

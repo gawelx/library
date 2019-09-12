@@ -13,9 +13,15 @@ public interface BorrowingRepository extends JpaRepository<Borrowing, Long> {
 
     List<Borrowing> findAllByReturnDateIsNull();
 
+    List<Borrowing> findAllByReturnDateIsNotNull();
+
     List<Borrowing> findAllByBorrowerId(Long borrowerId);
 
     List<Borrowing> findAllByBorrowerIdAndReturnDateIsNull(Long borrowerId);
+
+    boolean existsByBorrowerIdAndReturnDateIsNull(Long borrowerId);
+
+    List<Borrowing> findAllByBorrowerIdAndReturnDateIsNotNull(Long borrowerId);
 
     List<Borrowing> findAllByBookId(Long bookId);
 
