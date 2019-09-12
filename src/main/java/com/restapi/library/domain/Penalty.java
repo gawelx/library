@@ -3,6 +3,7 @@ package com.restapi.library.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -18,10 +19,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Penalty {
 
-    public static final BigDecimal PENALTY_DAILY_RATE = BigDecimal.valueOf(1.0);
+    public static final BigDecimal PENALTY_DAILY_RATE = BigDecimal.valueOf(1);
 
     @Id
     @GeneratedValue
@@ -60,10 +62,10 @@ public class Penalty {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Penalty penalty = (Penalty) o;
-        return id.equals(penalty.id) &&
+        return Objects.equals(id, penalty.id) &&
                 creationTime.equals(penalty.creationTime) &&
                 penaltyCause == penalty.penaltyCause &&
-                penaltyFee.equals(penalty.penaltyFee) &&
+                penaltyFee.compareTo(penalty.penaltyFee) == 0 &&
                 paid.equals(penalty.paid) &&
                 borrowing.equals(penalty.borrowing);
     }

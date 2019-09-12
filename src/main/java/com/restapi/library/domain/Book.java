@@ -4,6 +4,7 @@ import com.restapi.library.dto.BookDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Book {
 
@@ -79,7 +81,7 @@ public class Book {
         Book book = (Book) o;
         return id.equals(book.id) &&
                 releaseYear.equals(book.releaseYear) &&
-                price.equals(book.price) &&
+                price.compareTo(book.price) == 0 &&
                 status == book.status &&
                 bookTitle.equals(book.bookTitle);
     }

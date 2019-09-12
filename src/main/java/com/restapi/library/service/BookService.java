@@ -3,7 +3,6 @@ package com.restapi.library.service;
 import com.restapi.library.domain.Book;
 import com.restapi.library.domain.BookStatus;
 import com.restapi.library.domain.Person;
-import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.BookRepository;
@@ -57,7 +56,7 @@ public class BookService {
 
     public List<Book> getAllBooksOfAuthor(final Long authorId) {
         Person author = personRepository.findByIdAndBookTitlesNotEmpty(authorId)
-                .orElseThrow(() -> new BadRequestException("The author with the id=" + authorId + " doesn't exist."));
+                .orElseThrow(() -> new NotFoundException("The author with the id=" + authorId + " doesn't exist."));
         return bookRepository.findAllByBookTitleAuthorsContains(author);
     }
 

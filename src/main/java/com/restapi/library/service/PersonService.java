@@ -1,7 +1,6 @@
 package com.restapi.library.service;
 
 import com.restapi.library.domain.Person;
-import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.NotFoundException;
 import com.restapi.library.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class PersonService {
 
     public Person updatePerson(final Person person) {
         if (person.getId() == null) {
-            throw new BadRequestException("The person id must be specified.");
+            throw new NotFoundException("The person with the id " + person.getId() + " doesn't exist.");
         }
         return personRepository.save(person);
     }

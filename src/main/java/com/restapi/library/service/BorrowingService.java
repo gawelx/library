@@ -3,7 +3,6 @@ package com.restapi.library.service;
 import com.restapi.library.controller.BorrowingAction;
 import com.restapi.library.controller.ProblemType;
 import com.restapi.library.domain.Borrowing;
-import com.restapi.library.domain.PenaltiesFactory;
 import com.restapi.library.exception.BadRequestException;
 import com.restapi.library.exception.ConflictException;
 import com.restapi.library.exception.NotFoundException;

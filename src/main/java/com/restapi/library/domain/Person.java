@@ -4,6 +4,7 @@ import com.restapi.library.dto.PersonDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +31,7 @@ import static com.restapi.library.domain.PersonStatus.ACTIVE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
 @Entity
 public class Person {
 
@@ -72,7 +74,7 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return id.equals(person.id) &&
+        return Objects.equals(id, person.id) &&
                 status == person.status &&
                 firstName.equals(person.firstName) &&
                 lastName.equals(person.lastName);
